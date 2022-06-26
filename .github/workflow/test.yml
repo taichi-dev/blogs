@@ -1,0 +1,61 @@
+name: PR Build Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pr-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Checkout Taichi Docs repo
+        uses: actions/checkout@v2
+        with:
+          repository: taichi-dev/docs.taichi.graphics.git
+          path: source
+
+      # - name: Checkout Taichi Autoapi Gen
+      #   uses: actions/checkout@v2
+      #   with:
+      #     repository: taichi-dev/docstring-gen
+      #     path: docstring-gen
+
+      # - name: Install Dependences
+      #   run: sudo apt-get install -y jq
+
+      # - name: Set Env
+      #   run: |
+      #     echo "TAICHI_PATH=${GITHUB_WORKSPACE}/source/python/taichi" >> $GITHUB_ENV
+      #     echo "TAICHI_MAIN=${GITHUB_WORKSPACE}/source" >> $GITHUB_ENV
+      #     echo "TAICHI_WEBSITE=${GITHUB_WORKSPACE}" >> $GITHUB_ENV
+
+      # - name: Export Env
+      #   run: |
+      #     export TAICHI_PATH=${{ env.TAICHI_PATH }}
+      #     export TAICHI_WEBSITE=${{ env.TAICHI_WEBSITE }}
+      #     export TAICHI_MAIN=${{ env.TAICHI_MAIN }}
+
+      - name: Sync blogs
+        run: |
+          rm -rf docs.taichi.graphics/website/blog
+          cp -rf blogs docs.taichi.graphics/website/blog
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install and Build
+        run: cd docs.taichi.graphics/website && yarn install && yarn build
