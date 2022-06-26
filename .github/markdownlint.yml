@@ -3,7 +3,7 @@ comment: 'Rules for Taichi blog'
 # See all rules at https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
 
 # disable all by default
-default: false
+default: true
 
 # MD001
 # heading-increment: true
@@ -55,7 +55,7 @@ default: false
 # no-space-in-links: true
 
 # MD042
-no-empty-links: true
+# no-empty-links: true
 
 # MD045
 # no-alt-text: true
