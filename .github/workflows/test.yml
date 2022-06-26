@@ -20,6 +20,12 @@ jobs:
           repository: taichi-dev/docs.taichi.graphics.git
           path: source
 
+      - name: Markdown lint
+        uses: avto-dev/markdown-lint@v1
+        with:
+          config: './.github/markdownlint.yml'
+          args: './blogs'
+
       # - name: Checkout Taichi Autoapi Gen
       #   uses: actions/checkout@v2
       #   with:
