@@ -25,7 +25,7 @@ no-missing-space-atx: true
 no-multiple-space-atx: true
 
 # MD022
-blanks-around-headings: true
+# blanks-around-headings: true
 
 # MD023
 heading-start-left: true
@@ -37,13 +37,13 @@ no-multiple-space-blockquote: true
 list-marker-space: true
 
 # MD031
-blanks-around-fences: true
+# blanks-around-fences: true
 
 # MD032
-blanks-around-lists: true
+# blanks-around-lists: true
 
 # MD034
-no-bare-urls: true
+# no-bare-urls: true
 
 # MD037
 no-space-in-emphasis: true
