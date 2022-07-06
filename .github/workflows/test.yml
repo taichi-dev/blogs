@@ -50,7 +50,7 @@ jobs:
       - name: Sync blogs
         run: |
           rm -rf source/website/blog
-          cp -rf blogs source/website/blog
+          cp -r blogs source/website/blog
 
       - name: Cache node_modules
         uses: actions/cache@v2
