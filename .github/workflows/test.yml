@@ -17,14 +17,14 @@ jobs:
       - name: Checkout Taichi Docs repo
         uses: actions/checkout@v2
         with:
-          repository: taichi-dev/docs.taichi.graphics.git
+          repository: taichi-dev/docs.taichi.graphics
           path: source
 
-      - name: Markdown lint
-        uses: avto-dev/markdown-lint@v1
-        with:
-          config: './.github/markdownlint.yml'
-          args: './blogs'
+      # - name: Markdown lint
+      #   uses: avto-dev/markdown-lint@v1
+      #   with:
+      #     config: './.github/markdownlint.yml'
+      #     args: './blogs'
 
       # - name: Checkout Taichi Autoapi Gen
       #   uses: actions/checkout@v2
@@ -49,8 +49,8 @@ jobs:
 
       - name: Sync blogs
         run: |
-          rm -rf docs.taichi.graphics/website/blog
-          cp -rf blogs docs.taichi.graphics/website/blog
+          rm -rf source/website/blog
+          cp -r blogs source/website/blog
 
       - name: Cache node_modules
         uses: actions/cache@v2
@@ -64,4 +64,4 @@ jobs:
           node-version: 14
 
       - name: Install and Build
-        run: cd docs.taichi.graphics/website && yarn install && yarn build
+        run: cd source/website && yarn install && yarn build

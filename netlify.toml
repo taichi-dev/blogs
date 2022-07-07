@@ -1,6 +1,0 @@
-[build]
-  command = "git clone https://github.com/taichi-dev/docs.taichi.graphics.git; rm -rf docs.taichi.graphics/website/blog; cp -rf blogs docs.taichi.graphics/website/blog; cd docs.taichi.graphics/website; rm -rf blog git fetch origin master; git reset --hard origin/master; npm install --global yarn@1.22; yarn install; yarn build;"
-
-  publish = "docs.taichi.graphics/website/build"
-  # Cancel the build if there're no changes detected in docs/ folder.
-  ignore = "git remote add upstream https://github.com/taichi-dev/blogs.git; git fetch upstream main; git diff --quiet $COMMIT_REF upstream/main -- blogs/ netlify.toml"
