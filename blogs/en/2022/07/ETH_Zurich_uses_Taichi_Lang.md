@@ -47,27 +47,45 @@ The simulation course collected almost 30 projects, most being satisfying and in
 
 - **Group 6**
 
-![Group 6: Position-based Fluids, by Antoine De Gendt and Quentin Guignard](/Users/libinmei/Desktop/ETH\ Zurich/ETH/6\ clip的副本.gif)
+![Group 6: Position-based Fluids, by Antoine De Gendt and Quentin Guignard](./pics/group6.gif)
 
-This is a Position-based Fluids (PBF) project running 200k particles at a frame rate of 60 FPS. The team also found that Taichi didn't support GPU sorting and raised a corresponding issue. Soon AmesingFlank implemented it in <https://github.com/taichi-dev/taichi/pull/3790>
+<center><font color=#6C6C6C size=2>Group 6: Position-based Fluids, by Antoine De Gendt and Quentin Guignard</font></center>
+
+This is a Position-based Fluids (PBF) project running 200k particles at a frame rate of 60 FPS. The team also found that Taichi didn't support GPU sorting and raised a corresponding [issue](https://github.com/taichi-dev/taichi/issues/3764). Soon [AmesingFlank](https://github.com/AmesingFlank) implemented it in <https://github.com/taichi-dev/taichi/pull/3790>
 
 - **Group 7**
 
-![Group 7: SPH for Snow](/Users/libinmei/Desktop/ETH\ Zurich/group7.png)
+![Group 7: SPH for Snow](./pics/group7.png)
+
+<center><font color=#6C6C6C size=2>Group 7: SPH for Snow</font></center>
 
 This group even spotted a bug in a published paper when doing their project. Impressive. Their demo, hmm, is sort of on the thin side. Still, there's a beautiful simplicity to it.:-)
 
 - **Group 15**
 
-![Group 15: Physically-based Simulation for Computer Graphics, by Joshua Aurand, Jasper Ermatinger, and Niall Siegenheim](/Users/libinmei/Desktop/ETH\ Zurich/group15.png)
+![Group 15: Physically-based Simulation for Computer Graphics, by Joshua Aurand, Jasper Ermatinger, and Niall Siegenheim](./pics/group15.png)
 
-<center>Group 15: Physically-based Simulation for Computer Graphics, by Joshua Aurand, Jasper Ermatinger, and Niall Siegenheim</center>
+<center><font color=#6C6C6C size=2>Group 15: Physically-based Simulation for Computer Graphics, by Joshua Aurand, Jasper Ermatinger, and Niall Siegenheim</font></center>
 
 This group used Taichi for fluid-structure interaction (FSI).
 
 - **Group 16**
 
+![Group 16](./pics/group16-1.png)
+
+<center><font color=#6C6C6C size=2>Group 16: Cloth Simulation - Position-based Dynamics, by Zeren Jiang, Zinuo You, and Yuhan Zhang</font></center>
+
+![Group 16-2](./pics/group16-2.png)
+![Group 16-3](./pics/group16-3.png)
+![Group 16-4](./pics/group16-4.png)
+
+<center><font color=#6C6C6C size=2>The performance becomes fivefold when running Taichi on GPU.</font></center>
+
 - **Group 24**
+
+![Group 24](./pics/group24.gif)
+
+<center><font color=#6C6C6C size=2>Group 24: Position-based Fluids, by Dano Roost, Jennifer Schurch, and Anne Marx</font></center>
 
 This group's project is artistic. They wrote a 3D PBF and exported a rendered video clip.
 
@@ -81,4 +99,42 @@ I can tell from the interview that the user experience is by and large terrific 
 
 ## Why did some not use Taichi Lang?
 
-According to Jingwei, 2 out of the 30 groups didn't use Taichi Lang for their final projects. One group chose NumPy because they needed a direct solver. Taichi v0.8.7 does not support this but now we support it. See the Sparse linear solver. The other group needed to use second derivative and so switched to PyTorch. Well, I can also point out this feature is right on our to-do list.
+According to Jingwei, 2 out of the 30 groups didn't use Taichi Lang for their final projects. One group chose NumPy because they needed a direct solver. Taichi v0.8.7 does not support this but now we support it. See the [Sparse linear solver](https://docs.taichi-lang.org/docs/sparse_matrix#sparse-linear-solver). The other group needed to use second derivative and so switched to PyTorch. Well, I can also point out this feature is right on our [to-do list](https://github.com/orgs/taichi-dev/projects/1).
+
+## What can be improved in Taichi and the future of Taichi
+
+Taichi Lang is a new parallel programming language and it has a long way to go to become a de facto standard in parallel programming or high-performance computing. I collected many issues or requests from this interview. Some have been fixed in the recent Taichi releases, and some have not. Here I'll list some of the most frequently mentioned issues or questions:
+
+- Many still put great importance on the quality of syntax errors. Though Taichi's overall user experience improved significantly according to the interview, we need to keep working on this feature.
+
+- Taichi's compilation needs to be accelerated. Students usually need to debug their programs frequently. So it would put them off if they need to wait for a couple of seconds to see the results each time they update their programs. One straightforward solution is cache. You need to implement Ir serialization/deserialization. Our community has recently implemented this. See this issue: [Support offline-cache for llvm backend of Taichi · Issue #4401 · taichi-dev/taichi](https://github.com/taichi-dev/taichi/issues/4401)
+
+- Some are uncertain about Taichi Lang's performance against other frameworks such as CUDA, and would require a comprehensive benchmarking report. Actually, we published a systematic [benchmarking report](https://github.com/taichi-dev/taichi_benchmark) when we released Taichi Lang v1.0.0. Taichi has more or less comparable performance to CUDA. But, for sure, you will have much fewer lines of code with Taichi Lang!
+
+![benchmark-1](./pics/benchmark1.png)
+![benchmark-2](./pics/benchmark2.png)
+![benchmark-3](./pics/benchmark3.png)
+
+<center><font color=#6C6C6C size=2>Taichi Lang vs. CUDA, JAX, C++</font></center>
+
+- Taichi's visualization tools such as GGUI need to be further improved. For example, they need to draw lines in Taichi's GGUI. Some complained they can't run GGUI on their Mac with v0.8.x. This is fixed as of v0.9.0.
+
+- Serial mode. Sometimes, the user may not want the for-loops in the outermost scope to be parallelized. Previously, we worked around this by wrapping the for-loop with a `if 1`:. Hate to say it, it was a bit awkward. Now we've elegantly fixed this issue. See here: <https://github.com/taichi-dev/taichi/issues/4421>
+
+- Second derivative. It is on our [to-do list](https://github.com/orgs/taichi-dev/projects/1/views/1).
+
+- There are many, many more features we want to implement. If you are interested in us, welcome to join [our community](https://github.com/taichi-dev/taichi)! :-)
+
+---
+
+Oh, yes, if you have not yet used Taichi Lang, you are very welcome to try it out! It is just one command line away!
+
+`python3 -m pip install --upgrade taichi`
+
+To try out different Taichi demos:
+
+`python3 -m taichi gallery`（or run `ti gallery` directly）
+
+Note that, to try out these Taichi demos, your Taichi version needs to be at least later than v1.0.0.
+
+Have fun, if you have any questions regarding Taichi Lang, I would be very happy to help!
