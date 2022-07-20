@@ -27,7 +27,7 @@ A fountain is a typical free surface that can be ideally simulated with [smoothe
 
 - Differentiable physical simulator
 
-![differentiable physical simulator](./pics/simulator-%20differentiable%20vs%20non-diff.png)
+![differentiable physical simulator](./pics/simulator-differentiable-vs-non-diff.png)
 
 A physical simulator that does not require gradients only needs to store a previous state and a new state, and this strategy is called double buffering. The two buffers are swapped each time the simulator conducts a timestep update. However, this strategy does not work with a differentiable physical simulator, which conforms to the chain rule and requires the entire history of the simulation states to compute derivatives. To preserve all historical states, the whole simulation is unrolled and every simulation step is recorded, as shown in the right part of the figure above.
 
