@@ -49,7 +49,7 @@ The simulation course collected almost 30 projects, most being satisfying and in
 
 ![Group 6: Position-based Fluids, by Antoine De Gendt and Quentin Guignard](./pics/group6.gif)
 
-<center><font color=#6C6C6C size=2>Group 6: Position-based Fluids, by Antoine De Gendt and Quentin Guignard</font></center>
+<center><font color="#6C6C6C" size="2">Group 6: Position-based Fluids, by Antoine De Gendt and Quentin Guignard</font></center>
 
 This is a Position-based Fluids (PBF) project running 200k particles at a frame rate of 60 FPS. The team also found that Taichi didn't support GPU sorting and raised a corresponding [issue](https://github.com/taichi-dev/taichi/issues/3764). Soon [AmesingFlank](https://github.com/AmesingFlank) implemented it in <https://github.com/taichi-dev/taichi/pull/3790>
 
@@ -57,7 +57,7 @@ This is a Position-based Fluids (PBF) project running 200k particles at a frame 
 
 ![Group 7: SPH for Snow](./pics/group7.png)
 
-<center><font color=#6C6C6C size=2>Group 7: SPH for Snow</font></center>
+<center><font color="#6C6C6C" size="2">Group 7: SPH for Snow</font></center>
 
 This group even spotted a bug in a published paper when doing their project. Impressive. Their demo, hmm, is sort of on the thin side. Still, there's a beautiful simplicity to it.:-)
 
@@ -65,7 +65,7 @@ This group even spotted a bug in a published paper when doing their project. Imp
 
 ![Group 15: Physically-based Simulation for Computer Graphics, by Joshua Aurand, Jasper Ermatinger, and Niall Siegenheim](./pics/group15.png)
 
-<center><font color=#6C6C6C size=2>Group 15: Physically-based Simulation for Computer Graphics, by Joshua Aurand, Jasper Ermatinger, and Niall Siegenheim</font></center>
+<center><font color="#6C6C6C" size="2">Group 15: Physically-based Simulation for Computer Graphics, by Joshua Aurand, Jasper Ermatinger, and Niall Siegenheim</font></center>
 
 This group used Taichi for fluid-structure interaction (FSI).
 
@@ -73,19 +73,19 @@ This group used Taichi for fluid-structure interaction (FSI).
 
 ![Group 16](./pics/group16-1.png)
 
-<center><font color=#6C6C6C size=2>Group 16: Cloth Simulation - Position-based Dynamics, by Zeren Jiang, Zinuo You, and Yuhan Zhang</font></center>
+<center><font color="#6C6C6C" size="2">Group 16: Cloth Simulation - Position-based Dynamics, by Zeren Jiang, Zinuo You, and Yuhan Zhang</font></center>
 
 ![Group 16-2](./pics/group16-2.png)
 ![Group 16-3](./pics/group16-3.png)
 ![Group 16-4](./pics/group16-4.png)
 
-<center><font color=#6C6C6C size=2>The performance becomes fivefold when running Taichi on GPU.</font></center>
+<center><font color="#6C6C6C" size="2">The performance becomes fivefold when running Taichi on GPU.</font></center>
 
 - **Group 24**
 
 ![Group 24](./pics/group24.gif)
 
-<center><font color=#6C6C6C size=2>Group 24: Position-based Fluids, by Dano Roost, Jennifer Schurch, and Anne Marx</font></center>
+<center><font color="#6C6C6C" size="2">Group 24: Position-based Fluids, by Dano Roost, Jennifer Schurch, and Anne Marx</font></center>
 
 This group's project is artistic. They wrote a 3D PBF and exported a rendered video clip.
 
@@ -115,7 +115,7 @@ Taichi Lang is a new parallel programming language and it has a long way to go t
 ![benchmark-2](./pics/benchmark2.png)
 ![benchmark-3](./pics/benchmark3.png)
 
-<center><font color=#6C6C6C size=2>Taichi Lang vs. CUDA, JAX, C++</font></center>
+<center><font color="#6C6C6C" size="2">Taichi Lang vs. CUDA, JAX, C++</font></center>
 
 - Taichi's visualization tools such as GGUI need to be further improved. For example, they need to draw lines in Taichi's GGUI. Some complained they can't run GGUI on their Mac with v0.8.x. This is fixed as of v0.9.0.
 
