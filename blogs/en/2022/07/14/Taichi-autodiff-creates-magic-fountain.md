@@ -91,7 +91,7 @@ Two types of trainable parameters are involved here - weights and biases. `n_inp
 
 The hierarchical memory layout for `weight`, `bias`, `hidden`, and `output` is shown below:
 
-![memory layout](./pics/memory%20layout.jpeg)
+![memory layout](./pics/memory-layout.jpeg)
 
 Though a fully-connected layer should not, in technical terms, contain non-linear activation functions, I use a non-linear activation function `tanh` here for simplicity.
 
@@ -130,7 +130,7 @@ As shown in the figure below, I insert a controller before each WCSPH solver. Th
 
 A controller consists of two fully connected layers (fc1 and fc2) and an activation function `tanh`, as presented in the figure below. The input of the controller is `Target`, which represents the position of the center of the target cube. The output of the controller is `Force`, which is applied to the fluids inside the `actuation area` at the current step.
 
-![tahn](./pics/tanh%20and%20force.png)
+![tahn](./pics/tanh-and-force.png)
 
 ## Train it!
 
