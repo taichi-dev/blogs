@@ -41,7 +41,7 @@ print(test())
 
 And you will see an error appear:
 
-![tip 1 error](./pics/tip%201.webp)
+![tip 1 error](./pics/tip-1.webp)
 
 To sum up: 
 
@@ -94,7 +94,7 @@ plt.show()
 
 And run the program:
 
-![tip 2 effect](./pics/cookbook%20tip2.png)
+![tip 2 effect](./pics/cookbook-tip2.png)
 
 To sum up:
 
@@ -129,7 +129,7 @@ print(val)
 
 And you will get the right result:
 
-![tip 3 result](./pics/cookbook%20tip3.png)
+![tip 3 result](./pics/cookbook-tip3.png)
 
 To sum up:
 
@@ -179,7 +179,7 @@ factors.to_torch()
 
 I tried it out with Matplotlib and it went well: 
 
-![tip 4 result](./pics/cookbook%20tip4.png)
+![tip 4 result](./pics/cookbook-tip4.png)
 
 ### Tip 5: Analyze performance with Taichi Profiler
 
@@ -218,7 +218,7 @@ ti.profiler.print_kernel_profiler_info()
 
 To give you an idea as to what the profiling report would look like:
 
-![tip 5 profiling](./pics/cookbook%20tip5.png)
+![tip 5 profiling](./pics/cookbook-tip5.png)
 
 To sum up: 
 
@@ -280,7 +280,7 @@ for i in range(n_particles):
 
 Result:
 
-![new feature](./pics/cookbook%20newfeature.png)
+![new feature](./pics/cookbook-newfeature.png)
 
 *Hope you have fun with the following mpm99 demo written with this new feature!*
 
