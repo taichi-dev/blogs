@@ -1,9 +1,9 @@
 ---
-title: "Taichi & PyTorch 03: Accelerate PyTorch with Taichi: Data Preprocessing & High-performance ML Operator Customization"
+title: "Taichi & PyTorch 03: Accelerate PyTorch with Taichi - Data Preprocessing & High-performance ML Operator Customization"
 date: "2022-09-15"
 slug: "accelerate-pytorch-with-taichi"
 authors:
-  - yuanming-hu
+  - Ailing Zhang & Haidong Lan
 tags: [CUDA, PyTorch, tutorial]
 ---
 
@@ -152,7 +152,7 @@ def taichi_forward_v0(
 
 The Taichi reference code is almost identical to its Python counterpart. Further, a good advantage that Taichi has over CUDA is that, without worrying about low-level details like parallelization and pointer offsets, one can easily use Taichi to achieve comparable performance. 
 
-For your reference, we also put the CUDA reference code below. However, it has much poorer readability: The outmost loop is implicitly defined by thread parallelism. The index calculation is rather complicated, and each element's position in the matrix is not clear at a glance. Moreover, it could be rather error-prone to implement more sophisticated algorithms with CUDA.
+For your reference, we also put the **CUDA reference code** below. However, it has much poorer readability: The outmost loop is implicitly defined by thread parallelism. The index calculation is rather complicated, and each element's position in the matrix is not clear at a glance. Moreover, it could be rather error-prone to implement more sophisticated algorithms with CUDA.
 
 ```C++
 __global__ void kernel_forward(const float* w, const float* k, float* x,
