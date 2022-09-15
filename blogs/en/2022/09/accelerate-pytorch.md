@@ -3,7 +3,8 @@ title: "Taichi & PyTorch 03: Accelerate PyTorch with Taichi - Data Preprocessing
 date: "2022-09-15"
 slug: "accelerate-pytorch-with-taichi"
 authors:
-  - Ailing Zhang & Haidong Lan
+  - Ailing Zhang
+  - Haidong Lan
 tags: [CUDA, PyTorch, tutorial]
 ---
 
