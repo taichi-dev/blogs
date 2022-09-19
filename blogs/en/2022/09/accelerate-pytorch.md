@@ -82,10 +82,10 @@ The logic behind the above code snippet is pretty straightforward. The program i
 
 Now, let's take a look at the final results: the PyTorch kernel (v1.12.1) took 30.392 ms[1] to complete padding on RTX3090; the Taichi kernel took 0.267 ms only[2]. Taichi outruns PyTorch by more than 100x.
 
-| Kernel function | Average time (ms) | CUDA kernels launched (No.) |
-| --------------- | ----------------- | --------------------------- |
-| `torch_pad()`   | 30.392            | 58                          |
-| `ti_pad()`      | 0.267         | 1                           |
+|  Kernel function  |  Average time (ms)  |  CUDA kernels launched (No.)  |
+| :---------------: | :-----------------: | :---------------------------: |
+| `torch_pad()`     | 30.392              | 58                            |
+| `ti_pad()`        | 0.267               | 1                             |
 
 > The actual acceleration rate may vary depending on your implementation and GPU setup.
 
