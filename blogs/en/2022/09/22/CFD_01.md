@@ -4,7 +4,7 @@ date: "2022-09-22"
 slug: "can-taichi-play-a-part-in-cfd"
 authors:
   - houkensjtu
-tags: [CFD, benchmark, Taichi internals]
+tags: [CFD, simulation]
 ---
 
 Computational fluid dynamics (CFD) is a branch of fluid mechanics that endeavors to precisely reproduce the behavior of liquid/gas flows and their interaction with solid boundaries. It plays a vital role in such sectors as visual effects, virtual reality, and industrial design. 
@@ -38,7 +38,7 @@ $$\nabla ^2 f \approx
 
 ![discretized form](./pics/discretized_form.png)
 
-Now, we need to work out the solution to the discretized equations. Given that this is a linear system Ax=b in question, we can choose from either a direct solver or an iterative solver, depending on the size and sparsity of the matrix A, to derive the unknown vectors. One thing worth our attention here: **Both the discretization of differential equations and the solution to the linear system entail similar but mutually-independent computations of the vast amount of elements in the target field, which can be effectively accelerated if parallelized**. We will come back to this point later.
+Now, we need to work out the solution to the discretized equations. Given that this is a linear system Ax=b in question, we can choose from either a direct solver or an iterative solver, depending on the size and sparsity of the matrix A, to derive the unknown vectors. One thing worth our attention here: *Both the discretization of differential equations and the solution to the linear system entail similar but mutually-independent computations of the vast amount of elements in the target field, which can be effectively accelerated if parallelized*. We will come back to this point later.
 
 Finally, in the post-processing stage, we need to visualize the flow field data derived from the aforementioned steps into the more intuitive vector plots or contour plots. The image below right is visualized in Matplotlib, representing the velocity vector of the lid-driven cavity flows. Apart from Matplotlib, there are multiple tools available for visualization, including Taichi's built-in GUI system.
 
@@ -132,6 +132,6 @@ We will further elaborate on the application of Taichi kernels in the upcoming b
 
 ## Recap
 
-The most computation-intensive step in CFD is the discretization of differential equations, which involves massive operations of 2D or 3D data arrays. Taichi's data container makes the representation of a flow field intuitive and the **automatic parallelization mechanism significantly saves the computational time**. In addition, the built-in GUI system offers a convenient visualization solution to track fluid dynamics with only a few lines of code.
+The most computation-intensive step in CFD is the discretization of differential equations, which involves massive operations of 2D or 3D data arrays. Taichi's data container makes the representation of a flow field intuitive and the *automatic parallelization mechanism significantly saves the computational time*. In addition, the built-in GUI system offers a convenient visualization solution to track fluid dynamics with only a few lines of code.
 
 Here's hoping that Taichi can become a good companion for your CFD simulation projects. We look forward to seeing your fluid simulation demos, which may secure a place in our [CFD repo](https://github.com/houkensjtu/taichi-fluid)!
