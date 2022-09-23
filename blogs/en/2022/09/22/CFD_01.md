@@ -14,7 +14,7 @@ Computational fluid dynamics (CFD) is a branch of fluid mechanics that endeavors
 
 Although we are delightedly seeing an increasing number of impressive CFD projects implemented with Taichi (as presented in Taichi's [CFD repo](https://github.com/houkensjtu/taichi-fluid)), it remains confusing for outsiders as to how a programming language designed for computer graphics can facilitate high-performance computation and even write CFD programs directly.
 
-![demo](./pics/CFD_demos.gif)
+![demo](./pics/CFD-demos.gif)
 <center>Selected CFD demos</center>
 
 Well, this blog will answer this question by explaining how Taichi fits in with the needs of CFD. And hopefully, you will find it worth a try in your next project.
@@ -29,14 +29,14 @@ Let me explain the whole process step-by-step.
 
 First, pre-processing requires us to define the data structures (in most cases, 2D/3D arrays) that save the physical parameters of the flow field, such as velocity components (U and V), pressure (P), and density, and then set initial values for the flow variables.
 
-![flow data](./pics/field_data.png)
+![flow data](./pics/field-data.png)
 
 To find the solution to the discretized Navier-Stokes equations is the most time-consuming part we need to deal with.  Navier-Stoke equations are partial differential equations that describe the flow of incompressible fluids. Discretization means using the algebraic polynomials of discrete values to approximate the solutions to differential equations. For example, the Laplace operator of a scalar function can be denoted with the five-point discrete scheme:
 
 $$\nabla ^2 f \approx
 \frac {1}{\Delta x ^2}（4\cdot f_{i,j} - f_{i-1,j} - f_{i+1,j} - f_{i,j-1} - f_{i,j+1}）$$
 
-![discretized form](./pics/discretized_form.png)
+![discretized form](./pics/discretized-form.png)
 
 Now, we need to work out the solution to the discretized equations. Given that this is a linear system Ax=b in question, we can choose from either a direct solver or an iterative solver, depending on the size and sparsity of the matrix A, to derive the unknown vectors. One thing worth our attention here: *Both the discretization of differential equations and the solution to the linear system entail similar but mutually-independent computations of the vast amount of elements in the target field, which can be effectively accelerated if parallelized*. We will come back to this point later.
 
@@ -50,7 +50,7 @@ Faced with the demanding computational complexity, an ideal programming language
 
 Designed for computer graphics, Taichi is equipped with data structures friendly to large-scale numerical computation as well as and an automatic parallelism parallelization mechanism for performance speedup. At the same time, as a domain-specific language (DSL) embedded in Python, Taichi is integrated seamlessly with the Python ecosystem. So, we can leave the part that needs high-performance parallel computing to Taichi while keeping everything else in native Python code.
 
-![taichi and CFD](./pics/taichi_lang.png)
+![taichi and CFD](./pics/taichi-lang.png)
 <center>Taichi can accelerate large-scale parallel computing in Step 2</center>
 
 Now, we take the same Eulerian method as an example.
@@ -69,7 +69,7 @@ Similarly, the line of code below represents a 2D vector field of in the shape 6
 v_2d = ti.Vector.field(n=2, dtype=float, shape=(640, 480))
 ```
 
-Other valid data structures include matrices and user-defined structs, as detailed in the [doc site](https://docs.taichi-lang.org/docs/master/field).
+Other valid data structures include matrices and user-defined structs, as detailed in the [doc site](https://docs.taichi-lang.org/docs/field).
 
 ### Parallelization
 
@@ -116,7 +116,7 @@ while gui.running:
     gui.show()
 ```
 
-Taichi's GUI system can meet the most basic needs for visualization. You may still need other post-production software to achieve more complex rendering or animation effects. You can refer to the [doc site](https://docs.taichi-lang.org/docs/master/gui_system) to check the complete features of the GUI system.
+Taichi's GUI system can meet the most basic needs for visualization. You may still need other post-production software to achieve more complex rendering or animation effects. You can refer to the [doc site](https://docs.taichi-lang.org/docs/gui_system) to check the complete features of the GUI system.
 
 ## Application of Taichi kernels to CFD
 
