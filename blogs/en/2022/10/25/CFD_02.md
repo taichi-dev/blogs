@@ -8,7 +8,7 @@ authors:
 tags: [benchmark, CFD]
 ---
 
-In the [previous blog](/blogs/en/2022/09/22/CFD_01.md), we learned that Taichi, a high-performance computing language embedded in Python, goes beyond a development tool for computer graphics and renderers but also comes in handy for numerical computation that involves massive operations on 2D and 3D arrays. Computational fluid dynamics (CFD) is a typical scenario where Taichi can play a part. 
+In the [previous blog](https://docs.taichi-lang.org/blog/can-taichi-play-a-part-in-cfd), we learned that Taichi, a high-performance computing language embedded in Python, goes beyond a development tool for computer graphics and renderers but also comes in handy for numerical computation that involves massive operations on 2D and 3D arrays. Computational fluid dynamics (CFD) is a typical scenario where Taichi can play a part. 
 
 Now, the question is how much Taich can improve the performance of numerical computation programs. This blog applies Taichi and other acceleration solutions to some arithmetic operations frequently used in numerical computation and compares their performance and user-friendliness.
 
