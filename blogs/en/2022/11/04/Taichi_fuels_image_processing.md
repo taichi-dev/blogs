@@ -356,3 +356,203 @@ Image source: Pixarbay
 We can see that the bilateral filter smoothens the skin by removing local details and preserving the sharp edges. For contrast, we also apply a Gaussian filter with the same radius to the same original image, and it can barely beautify the face since all the edges are blurred.
 
 Source code: [bilateral_filter.py](https://github.com/taichi-dev/image-processing-with-taichi/blob/main/bilateral_filter.py)
+
+## An advanced case: Bilateral grid
+
+### Performance bottleneck of bilateral filtering
+
+Although bilateral filtering prevents image edges from being blurred, it has an unignorable performance bottleneck. Normally, we can optimize Gaussian filtering by separating a 2D filter into two 1D filters and applying the fast Fourier transform (FFT) to large convolution kernels. However, neither option works for a bilateral filter, which is inseparable and rules out FFT because of its dependence on the image content.
+
+Can we retrofit a bilateral filter to make it separable? Well, the answer lies in the *bilateral grid*.
+
+The bilateral grid was proposed in the [SIGGRAPH 2007 paper by Chen et al.](https://people.csail.mit.edu/sparis/publi/2007/siggraph/Chen_07_Bilateral_Grid.pdf) It is basically an accelerated version of the bilateral filter. The method is brilliant in that it manages to simplify filtering by resorting to higher-dimensional spaces. All the following steps we have to go through to implement the bilateral grid may seem intimidating at first sight, but we assure you that the idea behind is straightforward.
+
+A bilateral filter cannot be separated because the convolution kernels contain pixel values. But what if we create a third dimension for the independent convolution of pixel values? This is what the bilateral grid is about - involving higher dimensions to separate a bilateral filter.
+
+Take a grayscale image as an example. The image is a 2D grid $I$, with each element storing a grayscale pixel value. We now transform the grid into a 3D one $\widetilde{I}$, whose third dimension equals the pixel value range [0, 255] in length. That is to say, the new grid has a shape of $w\times h\times 255$. The pixel value at the position $(i, j, k)$ is denoted as follows:
+$$\widetilde{I}(i, j, k) = \begin{cases}(I(i,j),1), & \text{if } k=I(i,j)\\ (0, 0). & \text{otherwise}\end{cases}$$
+
+Apply a 3D Gaussian filter to this grid, and the result is a new 3D grid $\widetilde{\Gamma}:\widetilde{\Gamma}(i,j,k) = (z, w)$. $\Gamma(i,j)=z/w$ is what we can derive from the bilateral filtering of $I$.
+
+A useful technique: The grid $I$ stores the 2-tuple $(I(i,j),1)$to record the weighted sum of pixel values, i.e., $\sum w_iI(x_i)$, into the first entry and the sum of weights, i.e., $\sum w_i$, into the second entry during convolution. The division of the two results gives the normalized value. 
+
+The figure below is excerpted from the paper, illustrating how to upgrade a 1D image to 2D. The process involves three steps: create, process, and slice.
+
+<center>
+
+![trio](./pics/trio.png)
+The bilateral grid "trio": create, process, and slice.
+Image source: [SIGGRAPH 2007 paper by Chen et al.](https://people.csail.mit.edu/sparis/publi/2007/siggraph/Chen_07_Bilateral_Grid.pdf)
+</center>
+
+The leftmost image (a) in the figure shows the input 1D signal, where an evident break between the two segments represents the image edges. The second image on the left (b) was a 2D grid generated based on (a), converting the segments into two disconnected regions. The pixels on the tag end of the region above are far away from those on the starting point of the region below, hence little or even no weight they exert on each other during 2D Gaussian filtering. The edge information of the bilateral grid is preserved as such.
+
+This figure chooses a 1D signal as an example for simplicity. In practice, we can input a 2D image and upgrade it to 3D.
+
+Real-life scenarios can be tricky, though. A 1,024x1,024 (1MB) grayscale image would occupy 256MB of memory after being transformed into a 1,024x1,024x256 grid. It is also unnecessary to maintain such a large and precise grid since what we need is filtered results only. Therefore, we can scale down the generated grid proportionally through downsampling and restore it through oversampling after the filtering.
+
+We provide a step-by-step guide below to filter a *grayscale* image with the bilateral grid.
+
+### Step 1: Create a grid (downsampling and higher dimensions)
+
+To begin with, declare two 512x512x128 (32MB) vector fields, which store the 3D grid and its intermediate filtering results, respectively. To store the coefficients of filters, declare another field of the shape (2x512), where 2 stands for the two filters applied to the spatial space of the image and the range space of pixels, respectively.
+
+```python
+grid = ti.Vector.field(2, dtype=ti.f32, shape=(512, 512, 128))
+grid_blurred = ti.Vector.field(2, dtype=ti.f32, shape=(512, 512, 128))
+weights = ti.field(dtype=ti.f32, shape=(2, 512), offset=(0, -256))
+```
+
+Executed inside a Taichi kernel, the following code snippet initializes `grid`. We leave out the initialization of `weights` here because it has been discussed in the Gaussian filtering part.
+
+```python
+grid.fill(0)
+for i, j in ti.ndrange(img.shape[0], img.shape[1]):
+    lum = img[i, j]
+    grid[ti.round(i / s_s, ti.i32),
+         ti.round(j / s_s, ti.i32),
+         ti.round(lum / s_r, ti.i32)] += tm.vec2(lum, 1)
+
+grid_blurred.fill(0)
+grid_n = (img.shape[0] + s_s - 1) // s_s
+grid_m = (img.shape[1] + s_s - 1) // s_s
+grid_l = (256 + s_r - 1) // s_r
+```
+
+`s_s` is the scale factor of the image resolution, and `s_r` is the scale factor of the range space [0, 255]. `grid_blurred` is initialized to 0.
+
+We also compute the actual size of the scaled 3D grid, as denoted by `grid_n`, `grid_m`, and `grid_l`.
+
+### Step 2: Process the grid (Gaussian blurring)
+
+We are now ready to apply a 3D Gaussian filter to the 3D grid `grid`. The code snippet below may look lengthy and daunting, but it is merely a repetition of the Gaussian filtering we have discussed in the first section, only with one more filter involved.
+
+Note that the classic bilateral filter operator is separated into three filters. The following code is executed inside a Taichi kernel.
+
+```python
+blur_radius = ti.ceil(sigma_s * 3, int)
+for i, j, k in ti.ndrange(grid_n, grid_m, grid_l):
+    l_begin, l_end = max(0, i - blur_radius), min(grid_n, i + blur_radius + 1)
+    total = tm.vec2(0, 0)
+    for l in range(l_begin, l_end):
+        total += grid[l, j, k] * weights[0, i - l]
+
+    grid_blurred[i, j, k] = total
+
+for i, j, k in ti.ndrange(grid_n, grid_m, grid_l):
+    l_begin, l_end = max(0, j - blur_radius), min(grid_m, j + blur_radius + 1)
+    total = tm.vec2(0, 0)
+    for l in range(l_begin, l_end):
+        total += grid_blurred[i, l, k] * weights[0, j - l]
+    grid[i, j, k] = total
+
+blur_radius = ti.ceil(sigma_r * 3, int)
+for i, j, k in ti.ndrange(grid_n, grid_m, grid_l):
+    l_begin, l_end = max(0, k - blur_radius), min(grid_l, k + blur_radius + 1)
+    total = tm.vec2(0, 0)
+    for l in range(l_begin, l_end):
+        total += grid[i, j, l] * weights[1, k - l]
+
+    grid_blurred[i, j, k] = total
+```
+
+The three outermost for loops correspond to the three filters: the former two act on the spatial space using the weight `weights[0]` and the latter one on the range space using the weight `weights[1]`.
+
+We write the intermediate filtering results into `grid_blurred` and `grid` in turn, and the final results after three rounds of filtering are stored in `grid_blurred`.
+
+### Step 3: Slice the grid (trilinear interpolation)
+
+Finally, we obtain the filtered image from the down-sampled grid `grid_blurred` through oversampling. This step is nothing but straightforward. Again, the code below is executed inside a Taichi kernel.
+
+```python
+for i, j in ti.ndrange(img.shape[0], img.shape[1]):
+    lum = img[i, j]
+    sample = sample_grid(i / s_s, j / s_s, lum / s_r)
+    img[i, j] = ti.u8(sample[0] / sample[1])
+```
+
+For the position `[i, j, img[i,j]]` in the pre-scaling 3D grid, we derive its value by passing the value of `[i / s_s, j / s_s, lum / s_r]` in the post-scaling grid into the interpolation function `sample_grid`. The result should be a 2-tuple $(z,w)$, where $z$ represents the weighted sum of pixels and $w$ the sum of weights. The division of $z$ and $w$ gives the filtered value.
+
+Wait... Have we missed out something? You may wonder what the interpolation function `sample_grid` is. It is not invented out of nowhere but merely an upgrade of the bilinear interpolation that we have explained in the first section. It is trilinear in nature, and similar to bilinear interpolation, it calculates the weighted sum of the eight vertices of a unit cube. The function consists of two steps: bilinear interpolations of the top and bottom faces of the cube, respectively, followed by a linear interpolation operation on the results derived from the aforementioned step. 
+
+Source code: [bilateral_grid.py](https://github.com/taichi-dev/image-processing-with-taichi/blob/main/bilateral_grid.py)
+
+**A quick recap:** The higher-dimension approach replaces an inseparable 2D convolution with a separable 3D convolution. Performance-wise, it is recommended for the following reasons:
+
+- The XY resolution of the 3D grid is much lower than that of the original image, which means that the number of the voxels of the 3D grid is not necessarily more than that of the pixels of the 2D image. 
+- At the same time, separating the expensive 2D convolution dramatically reduces the computation workload. 
+- Another attractive advantage of the approach is that it is GPU-friendly, especially when implemented with Taichi :-).
+
+### Application: Real-time local tone mapping (HDR effect)
+
+The *dynamic range*, i.e., the ratio between the maximum and minimum light intensities, that can be perceived by human eyes is $1:10^9$. However, an ordinary display screen can only display images with a dynamic range limited to $1:100 \sim 1:1000$, while an advanced camera captures a range lower than what human eyes are capable of but better than display screens. As a result, displaying high dynamic range (HDR) pictures on low dynamic range (LDR) devices without any processing often leads to a loss of details in the shadows or in the highlights.
+
+<center>
+
+![underexposure and overexposure](./pics/under_over_exposure.png)
+The dilemma about processing scenes with a great contrast between lights and shadows: A low brightness loses details in the shadows (e.g., branches in complete darkness), but a higher brightness causes overexposure of the sky.
+</center>
+
+We can solve the problem with a technique called tone mapping. Generally, there are two kinds of tone mapping: global tone mapping, which adjusts the brightness of all the pixels with the same function, and local tone mapping, which is context-based adjustment depending on individual pixels' neighbors. Local tone mapping is usually considered the better option. 
+
+It all sounds terrific. But what is the relationship between local tone mapping and bilateral filtering? Bilateral filtering was introduced in the first place to *preserve the edges and blur the local details*, while local tone mapping serves the opposite purpose - *preserving the local details and blurring the edges*. To put it simply, local tone mapping can be regarded as a *reversed* version of bilateral filtering. Therefore, it can be used to compress HDR images as human eyes tend to pay more attention to local details.
+
+Follow the steps below to implement local tone mapping with the bilateral grid:
+
+1. Calculate the log luminance of an RGB image (i.e., logarithm of the weighted sum of the RGB values) and name the new image $L$.
+2. Apply bilateral filtering to $L$ and get the blurred image, i.e., log luminance base: $B =$ bilateral_filter$(L)$.
+3. Calculate the luminance detail layer: $D = L - B$, which is the brightness part we want to preserve.
+4. Compress B: $B' = \alpha B$, ($0 < \alpha < 1$). B is the major cause of the wide dynamic range, and compressing it would not affect viewers' perception.
+5. Recalculate the log luminance of the adjusted image: $L' = B' + D + \beta$, where $\beta$ is a constant standing for exposure compensation.
+6. Compute the new image based on $L'$, ensuring that the RBG values of each pixel are in proportion to the original values and that the luminance is the same as $L'$.
+
+*At last, we get a more natural picture where shadows and highlights are balanced and vividly presented.*
+
+Source code: [bilateral_grid_hdr.py](https://github.com/taichi-dev/image-processing-with-taichi/blob/main/bilateral_grid_hdr.py)
+
+<center>
+
+![tone mapping](./pics/tone_mapping.jpeg)
+Image captured on the MIT campus.
+Save and run the source code on your device. Play with the parameters to see how the effects change. You may see haloing at some point. The parameter "blend" controls tone mapping.
+</center>
+
+A well-known case where the bilateral grid is used for tone mapping is the adventure game *Ghost of Tsushima*, where it takes only 250us to process a scene for display on a 1080P PS4 screen:
+
+![game](./pics/ghost_of_tsushima.png)
+
+>Image source: *Advances in Real-Time Rendering: Real-Time Samurai Cinema: Lighting, Atmosphere, and Tonemapping in Ghost of Tsushima*, SIGGRAPH 2021 
+This [Youtube video](https://www.youtube.com/watch?v=GOee6lcEbWg) elaborates on the post-processing pipelines of the game in great detail.
+
+## Notes 
+
+- **Storage and visualization:** OpenCV stores image channels in the BGR format by default for some historical reasons, while Taichi's visualization system adopts the RGB format. In addition, OpenCV's visualization tool `imshow()` sets the upper left corner of an image as the origin `(0, 0)` with i representing the y-axis and j the x-axis; Taichi's `gui.set_image` creates a slightly different coordinate system by taking the bottom left corner as the origin with i representing the x-axis and j the y-axis. This article does not go into the details of the coordinate system because Taichi is mainly used for computation instead of visualization here. 
+- **Debugging:** You can activate debug mode by setting `debug=True` in the `ti.init()` call to automatically detect common errors like out-of-bound array accesses at the cost of slight performance loss. If you use a raw CUDA, these errors are harder to detect.  
+- **Data types:** Images are often stored as NumPy arrays of the data type `np.uint8`, which corresponds to `ti.u8` in Taichi. Similarly, `np.float32` corresponds to Taichi's `ti.f32` or simply `float`.
+- **Performance:** Taichi's advantage in GPU-accelerated computation may not come into full play when it is used to process low-resolution images because the launch of GPU kernels, JIT compilation, and the overhead from pybind11 would offset any acceleration. You can feel its high performance more evidently in scenarios involving high-resolution images and complex computations.
+
+## Summary
+
+Is Taichi better positioned to accelerate image processing compared with other tools? The answer is affirmative. If you ever had experience with implementing classic algorithms like the bilateral grid in Python, you would agree that it used to be extremely laborious to achieve GPU-powered high performance.
+
+At the same time, we admit that Taichi can do better in the following aspects:
+
+- There are too many APIs with long names (such as `ti.types.ndarray(element_dim=1)`) for users to remember.
+- Users often have needs of deployment after prototyping, and Taichi expects to support deployment with an AOT system, which is still under development. 
+- The overhead incurred by calling pybind11 for processing low-resolution images may compromise the performance. 
+- Taichi outperforms other tools in customization but does not stand out in terms of the productivity of some simple and standard operations, such as Gaussian blurring, which can be conveniently implemented in Matlab/OpenCV with one line of code only. In the future, Taichi may incorporate these operations as well. 
+
+Although Taichi is not perfect yet as an image processing tool, we cannot deny its irreplaceable value for users. As our open-source community keeps improving its features and user experience, Taichi will surely secure a place and gain increasing popularity in this sector.
+
+All the source code and input images are available in [this repo](https://github.com/taichi-dev/image-processing-with-taichi).
+
+It is already a lengthy article, and we have to leave out any rigorous evaluation of the programs, attempts at optimization, or ahead-of-time (AOT) deployment to mobile devices. Hopefully, we can touch upon these topics soon. If you are interested, subscribe to our monthly newsletter for the latest blogs and other useful information!
+
+## References
+
+- MIT tutorial on bilateral filtering: <https://people.csail.mit.edu/sparis/bf_course/>
+- Original paper that proposes the bilateral grid: <https://people.csail.mit.edu/sparis/publi/2007/siggraph/Chen_07_Bilateral_Grid.pdf>
+- Real-time post-processing of *Ghost of Tsushima*: *Advances in Real-Time Rendering: Real-Time Samurai Cinema: Lighting, Atmosphere, and Tonemapping in Ghost of Tsushima*, SIGGRAPH 2021
+- Taichi Lang documentation: <https://docs.taichi-lang.org/>
+- Some of the images cited in this article are from Wikipedia
+
