@@ -212,9 +212,7 @@ Given that
 
 ![G(x,y)](./pics/G(xy).png)
 
-denotes the product of two 1D density functions, the Gaussian kernel is separable. *K* can be represented as the product of a 1D vector *v = (G<sub>1</sub>(-k),G<sub>1</sub>(-k + 1),...,G<sub>1</sub>(k))<sup>T</sup>* and the transpose of the vector:
-
-*K = v &times; v<sup>T</sup>*
+denotes the product of two 1D density functions, the Gaussian kernel is separable. *K* can be represented as the product of a 1D vector *v = (G<sub>1</sub>(-k),G<sub>1</sub>(-k + 1),...,G<sub>1</sub>(k))<sup>T</sup>* and the transpose of the vector: *K = v &times; v<sup>T</sup>*.
 
 Accordingly, the convolution between an image and the kernel *K* can be separated into two 1D convolution operations, i.e., convolution of each column using *v* and convolution of each row using *v<sup>T</sup>* ([this website](http://www.songho.ca/dsp/convolution/convolution.html#convolution_2d) provides a proof). In this way, the 2D convolution *O(m&times;n&times;k<sup>2</sup>)* is simplified into *O(m&times;n&times;k)*.
 
