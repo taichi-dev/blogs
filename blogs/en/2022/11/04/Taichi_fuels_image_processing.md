@@ -7,6 +7,8 @@ authors:
   - neozhaoliang
 tags: [advanced, beginner, image processing, tutorial]
 ---
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
 
 ![GPU-accelerated image processing tutorial](./pics/background.png)
 
@@ -58,7 +60,7 @@ All source code used in this article is available at this repo: [Image processin
 
 Let's start with a basic example, image transposition, to familiarize you with the essential steps of image processing with Taichi.
 
-Similar to matrix transposition, image transposition entails swapping the positions of the pixels at :math:`(i, j)` and :math:`(j, i)`.
+Similar to matrix transposition, image transposition entails swapping the positions of the pixels at $(i, j)$ and $(j, i)$.
 
 ![transposed cat](./pics/transpose_cat.png)
 
@@ -123,7 +125,7 @@ Bilinear interpolation is a technique frequently used for image upsampling. Supp
 Upsampling by enlarging each pixel five times
 </center>
 
-For a pixel :math:`(i, j)` in the output image, its corresponding position in the original image is :math:`P=(i/5, j/5)`, which does not necessarily coincide with any pixel of the input. Rounding :math:`P` up or down to the nearest pixel produces the mosaic effect as above.
+For a pixel $(i, j)$ in the output image, its corresponding position in the original image is $P=(i/5, j/5)$, which does not necessarily coincide with any pixel of the input. Rounding $P$ up or down to the nearest pixel produces the mosaic effect as above.
 
 Bilinear interpolation takes a different approach. It captures the four pixels around $P$ and returns the weighted mean of their pixel values:
 
