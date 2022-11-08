@@ -123,7 +123,7 @@ Bilinear interpolation is a technique frequently used for image upsampling. Supp
 Upsampling by enlarging each pixel five times
 </center>
 
-For a pixel *(i, j)* in the output image, its corresponding position in the original image is P=(i/5, j/5), which does not necessarily coincide with any pixel of the input. Rounding *P* up or down to the nearest pixel produces the mosaic effect as above.
+For a pixel *(i, j)* in the output image, its corresponding position in the original image is *P=(i/5, j/5)*, which does not necessarily coincide with any pixel of the input. Rounding *P* up or down to the nearest pixel produces the mosaic effect as above.
 
 Bilinear interpolation takes a different approach. It captures the four pixels around *P* and returns the weighted mean of their pixel values:
 
@@ -135,11 +135,11 @@ Image source: [Wikipedia](https://en.wikipedia.org/wiki/Bilinear_interpolation)
 
 The four pixels surrounding *P=(x,y)* are:
 
-![surrounding pixels coordinates](./pics/surrounding_pixel_coordinate.png)
+*Q<sub>11</sub> = (x<sub>1</sub>,y<sub>1</sub>), Q<sub>12</sub> = (x<sub>1</sub>,y<sub>2</sub>), Q<sub>21</sub> = (x<sub>2</sub>,y<sub>1</sub>), Q<sub>22</sub> = (x<sub>2</sub>,y<sub>2</sub>)*
 
 They form a unit square, whose area (equivalent to the sum of the areas of the four rectangles) is 1. The weight of each pixel is the area of the rectangle in the same color as the pixel. For example, if *P* moves closer to the yellow pixel *Q<sub>12</sub>* in the upper left corner, the yellow rectangle at the bottom right will become larger, assigning a larger weight to *Q<sub>12</sub>*. 
 
-We can now perform three 1D linear interpolations. We first adopt the weight *x-x_1* to perform interpolations on the pairs *(Q<sub>11</sub>,Q<sub>21</sub>)* and *(Q<sub>12</sub>,Q<sub>22</sub>)*, respectively, and get the results *R<sub>1</sub>* and *R<sub>2</sub>*. Then, interpolate *(R<sub>1</sub>,R<sub>2</sub>)* with the weight *y-y_1*.
+We can now perform three 1D linear interpolations. We first adopt the weight *x - x<sub>1</sub>* to perform interpolations on the pairs *(Q<sub>11</sub>,Q<sub>21</sub>)* and *(Q<sub>12</sub>,Q<sub>22</sub>)*, respectively, and get the results *R<sub>1</sub>* and *R<sub>2</sub>*. Then, interpolate *(R<sub>1</sub>,R<sub>2</sub>)* with the weight *y - y<sub>1</sub>*.
 
 ```python
 import taichi.math as tm
@@ -214,7 +214,7 @@ Given that
 
 denotes the product of two 1D density functions, the Gaussian kernel is separable. *K* can be represented as the product of a 1D vector *v = (G<sub>1</sub>(-k),G<sub>1</sub>(-k + 1),...,G<sub>1</sub>(k))<sup>T</sup>* and the transpose of the vector:
 
-![K formula](./pics/K_formula.png)
+*K = v &times; v<sup>T</sup>*
 
 Accordingly, the convolution between an image and the kernel *K* can be separated into two 1D convolution operations, i.e., convolution of each column using *v* and convolution of each row using *v<sup>T</sup>* ([this website](http://www.songho.ca/dsp/convolution/convolution.html#convolution_2d) provides a proof). In this way, the 2D convolution *O(m&times;n&times;k<sup>2</sup>)* is simplified into *O(m&times;n&times;k)*.
 
@@ -222,6 +222,7 @@ Accordingly, the convolution between an image and the kernel *K* can be separate
 
 ![Gaussian filtering](./pics/origin_to_Gaussian.png)
 From left to right: the original image, the intermediate result of vertical filtering, and the final result of complete Gaussian filtering (*&sigma; = 5.0*)
+
 Input image source: [Wikipedia](https://en.wikipedia.org/wiki/Bilateral_filter)
 </center>
 
@@ -288,7 +289,7 @@ def gaussian_blur(img: img2d, sigma: float):
         img[i, j] = total_rgb.cast(ti.u8)
 ```
 
-In the code snippet above, Lines 3-5 set the post-filtering image to 0 and initialize the Gaussian filter. The following two for loops, as defined by Lines 7-14 and Lines 16-22, respectively, are essentially the same, except that the first for loop saves the column filtering results in `img_blurred` and the second for loop saves results back to the input image `img`.
+In the code snippet above, Lines 3–5 set the post-filtering image to 0 and initialize the Gaussian filter. The following two for loops, as defined by Lines 7–14 and Lines 16–22, respectively, are essentially the same, except that the first for loop saves the column filtering results in `img_blurred` and the second for loop saves results back to the input image `img`.
 
 With preparation done, we can compute the product of the filter's elements and the elements of `img`. It is as simple as that!
 
@@ -391,7 +392,7 @@ Take a grayscale image as an example. The image is a 2D grid *I*, with each elem
 Apply a 3D Gaussian filter to this grid, and the result is a new 3D grid:
 ![filtered 3D grid](./pics/filtered_3Dgrid.png)
 
-*&Gamma;(i,j = z/w* is what we can derive from the bilateral filtering of the original grid *I*.
+*&Gamma;(i,j) = z/w* is what we can derive from the bilateral filtering of the original grid *I*.
 
 A useful technique: The grid *I* stores the 2-tuple *(I(i,j),1)* to record the weighted sum of pixel values, i.e., *&sum; w<sub>i</sub>I(x<sub>i</sub>)*, into the first entry and the sum of weights, i.e., *&sum; w<sub>i</sub>*, into the second entry during convolution. The division of the two results gives the normalized value. 
 
@@ -520,7 +521,7 @@ Follow the steps below to implement local tone mapping with the bilateral grid:
 
 1. Calculate the log luminance of an RGB image (i.e., logarithm of the weighted sum of the RGB values) and name the new image *L*.
 2. Apply bilateral filtering to *L* and get the blurred image, i.e., log luminance base: *B = bilateral_filter(L)*.
-3. Calculate the luminance detail layer: *D = L - B*, which is the brightness part we want to preserve.
+3. Calculate the luminance detail layer: *D = L − B*, which is the brightness part we want to preserve.
 4. Compress B: *B' = &alpha;B*, (*0 &lt; &alpha; &lt; 1*). B is the major cause of the wide dynamic range, and compressing it would not affect viewers' perception.
 5. Recalculate the log luminance of the adjusted image: *L' = B' + D + &beta;*, where *&beta;* is a constant standing for exposure compensation.
 6. Compute the new image based on *L'*, ensuring that the RBG values of each pixel are in proportion to the original values and that the luminance is the same as *L'*.
