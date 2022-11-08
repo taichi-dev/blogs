@@ -8,11 +8,11 @@ authors:
 tags: [advanced, beginner, image processing, tutorial]
 ---
 
-![background image](./pics/background.png)
+![GPU-accelerated image processing tutorial](./pics/background.png)
 
 In the [previous blog](https://docs.taichi-lang.org/blog/accelerate-python-code-100x), we talked about how to use Taichi to accelerate Python programs. Many of our readers are curious about whether Taichi can fuel specifically *image processing tasks*, work together with OpenCV (`import cv2`), and even process images in parallel on GPUs. Well, in this article we will strive to provide answers to these questions. 
 
-To make your reading experience less tedious, we will take the beauty filters and the HDR effect of the popular console game *Ghost of Tsushima* as examples to elaborate on image processing algorithms, including the Gaussian filter, the bilateral filter, and the bilateral grid, in ascending order of difficulty. You are recommended to write code as you read on, and we're sure you will not close this page empty-handed whether you are familiar with image processing or not. We hope that this article can serve you well, and we look forward to your feedback, positive or negative :)
+To make your reading experience less tedious, we will take the beauty filters and the HDR effect of the popular console game *Ghost of Tsushima* as examples to elaborate on image processing algorithms, including the Gaussian filter, the bilateral filter, and the bilateral grid, in ascending order of difficulty. You are recommended to write code as you read on, and we're sure you will not close this page empty-handed whether you are familiar with image processing or not. We hope that this article can serve you well, and we look forward to your feedback, positive or negative :).
 
 ## Introduction
 
@@ -37,8 +37,10 @@ With the features listed above, Taichi not only maximizes the simplicity of codi
 So much for the theory. Let's get down to practice. This article is composed of three sections to explain how Taichi accelerates image processing in Python:
 
 I. [An entry-level case: Image transposition and bilinear interpolation](#an-entry-level-case-image-transposition-and-interpolation)
-II. An intermediate case:  Gaussian filtering and bilateral filtering
-III. An advanced case: Bilateral grid and high dynamic range (HDR) tone mapping
+
+II. [An intermediate case: Gaussian filtering and bilateral filtering](#an-intermediate-case-gaussian-filtering-and-bilateral-filtering)
+
+III. [An advanced case: Bilateral grid and high dynamic range (HDR) tone mapping](#an-advanced-case-bilateral-grid)
 
 We will demonstrate, step by step, how image processing algorithms evolve, and explore some of their fascinating applications. In the end, we will summarize things you need to keep in mind when using Taichi for image processing and also discuss Taichi's current limitations for future improvement.
 
@@ -56,7 +58,7 @@ All source code used in this article is available at this repo: [Image processin
 
 Let's start with a basic example, image transposition, to familiarize you with the essential steps of image processing with Taichi.
 
-Similar to matrix transposition, image transposition entails swapping the positions of the pixels at $(i, j)$ and $(j, i)$.
+Similar to matrix transposition, image transposition entails swapping the positions of the pixels at :math:`(i, j)` and :math:`(j, i)`.
 
 ![transposed cat](./pics/transpose_cat.png)
 
@@ -121,7 +123,7 @@ Bilinear interpolation is a technique frequently used for image upsampling. Supp
 Upsampling by enlarging each pixel five times
 </center>
 
-For a pixel $(i, j)$ in the output image, its corresponding position in the original image is $P=(i/5, j/5)$, which does not necessarily coincide with any pixel of the input. Rounding $P$ up or down to the nearest pixel produces the mosaic effect as above.
+For a pixel :math:`(i, j)` in the output image, its corresponding position in the original image is :math:`P=(i/5, j/5)`, which does not necessarily coincide with any pixel of the input. Rounding :math:`P` up or down to the nearest pixel produces the mosaic effect as above.
 
 Bilinear interpolation takes a different approach. It captures the four pixels around $P$ and returns the weighted mean of their pixel values:
 
@@ -191,6 +193,7 @@ Gaussian filtering is one of the most widely used filtering algorithms in the fi
 
 ![guassian kernel](./pics/gaussian_kernel.png)
 A 2D Gaussian convolution kernel. 
+
 Image source: *Fast Bilateral Filtering for the Display of High-Dynamic-Range Images* by Durand and Dorsey, SIGGRAPH 2006
 </center>
 
