@@ -7,7 +7,7 @@ authors:
 tags: [advanced, quant, tutorial]
 ---
 
-Starting from v1.1.0, Taichi provides quantized data types. But why is quantization important in physical simulation? This blog demonstrates how this new feature reduces your GPU memory usage significantly and requires *zero* change to your computational code.
+Starting from v1.1.0, Taichi provides quantized data types. But why is quantization important, especially in scenarios where Taichi stands out, such as physical simulation? This blog demonstrates how this new feature reduces your GPU memory usage significantly and requires *zero* change to your computational code.
 
 ## What is quantization?
 
@@ -97,7 +97,7 @@ Left: Original program. Right: Second quantized program
 
 So far, you have successfully modified a Taichi program with quantization, saving half of the GPU memory consumption and exerting little impact on the final visual effects. Hopefully, this neat example has demonstrated *how convenient and efficient it is to experiment on different data types while keeping the computational code intact*.
 
-Here, we only introduced the basics of Taichi's quantized data types. You can refer to our document for detailed explanation, more examples, and advanced uses. You can start with Taichi examples (`ti example`) and share with us how you manage to minimize their GPU memory consumption without tampering with the output quality.
+Here, we only introduced the basics of Taichi's quantized data types. You can refer to our [document](https://docs.taichi-lang.org/docs/quant) for detailed explanation, more examples, and advanced uses. You can start with Taichi examples (`ti example`) and share with us how you manage to minimize their GPU memory consumption without tampering with the output quality.
 
 ## Conclusion
 
