@@ -73,6 +73,7 @@ That's all we need to do to re-define the data types in this program. Run the re
 
 ![lst quantization](./pics/1st_quantization.gif)
 Left: Original program
+
 Right: Quantized program
 
 </center>
@@ -93,6 +94,7 @@ ti.root.dense(ti.ij, (N, N)).place(bitpack)
 
 ![2nd quantization](./pics/2nd_quantization.gif)
 Left: Original program
+
 Right: Second quantized program
 
 </center>
