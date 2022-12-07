@@ -19,7 +19,7 @@ Well, it proves that parallel computing and distributed computing can be perfect
 
 ## A quick start with MPI4Py
 
-MPI (message passing interface) is a standardized communication interface initiated over two decades ago and has since been continuously improved. It enables thousands of computers to communicate and coordinate with each other, circulate data, and facilitate large-scale computations. Therefore, you cannot possibly bypass MPI as long as you use supercomputing. Implementing an MPI program from scratch is not easy. Luckily, MPI is available through a Python package, MPI4Py, and the following snippet shows one snippet of a most basic MPI4Py program:
+MPI (message passing interface) is a standardized communication interface initiated over two decades ago and has since been continuously improved. It enables thousands of computers to communicate and coordinate with each other, circulate data, and facilitate large-scale computations. Therefore, you cannot possibly bypass MPI as long as you use supercomputing. Implementing an MPI program from scratch is not easy. Luckily, MPI is available through a Python package, MPI4Py, and the following snippet shows a most basic MPI4Py program:
 
 ```python
 # mpi_hello.py
@@ -190,7 +190,7 @@ To evaluate and compare the performance of different implementations, I configur
 
 ![MPI environment](./pics/mpi_environment.png)
 
-I tested against the 8192 * 8192 fields on the connected machines and evaluated the CPU and GPU performance, respectively. With Taichi, we can switch between the CPU and GPU implementations effortlessly by simply specifying `arch=ti.cpu` or `arch=ti.gpu` upon initialization.
+I tested against the 8192 &times; 8192 fields on the connected machines and evaluated the CPU and GPU performance, respectively. With Taichi, we can switch between the CPU and GPU implementations effortlessly by simply specifying `arch=ti.cpu` or `arch=ti.gpu` upon initialization.
 
 Ideally, distributed computing can achieve *linear scalability*, i.e., the performance gain in proportion to the number of machines added.
 
@@ -212,7 +212,7 @@ If we want to achieve linear scalability over hardware platforms with great perf
 
 ## Conclusion
 
-In this blog, we demonstrate how to use Taichi and MPI4Py to implement parallel and distributed computing. The complete program takes only 100 or so lines of Python code, yet achieves satisfactory scalability. Hopefully, this blog can inspire those faced with large-scale numerical computations. Nevertheless, I touched upon the most basic case here. Real-life MPI programs can be much trickier, especially when it involves random data access or complex data dependencies that are hard to solve.
+In this blog, I demonstrate how to use Taichi and MPI4Py to implement parallel and distributed computing. The complete program takes only 100 or so lines of Python code, yet achieves satisfactory scalability. Hopefully, this blog can inspire those faced with large-scale numerical computations. Nevertheless, I touched upon the most basic case here. Real-life MPI programs can be much trickier, especially when it involves random data access or complex data dependencies that are hard to solve.
 
 If you encounter any difficulties in leveraging MPI and Taichi or have better solutions, share them with us in the [slack channel](https://taichicommunity.slack.com/ssb/redirect#/shared-invite/email) or our [subreddit community](https://www.reddit.com/r/taichi_lang/)!
 
