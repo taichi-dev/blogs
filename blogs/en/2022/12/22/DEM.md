@@ -8,7 +8,7 @@ authors:
 tags: [advanced, collision detection, DEM, tutorial]
 ---
 
-Numerical simulation and computer graphics usually involve collision detection of a massive number of particles (in many cases, millions of particles). Regular operations, such as particle movement and boundary handling, come with a time complexity denoted with *O(N)* (N refers to the number of particles). But the complexity of collision detection can easily escalate to *O(N^2)* if no optimization is made, imposing an algorithmic bottleneck. A commonly-used technique is grid-based neighborhood search. By confining the search for collision-prone particles to a small area, we can reduce the computational complexity of collision detection back to *O(N)*. This article takes a minimal 2D discrete element method (DEM) solver as an example and presents a highly efficient implementation of neighborhood search using Taichi's data structures.
+Numerical simulation and computer graphics usually involve collision detection of a massive number of particles (in many cases, millions of particles). Regular operations, such as particle movement and boundary handling, can be handled in *O(N)* time complexity (N refers to the number of particles). But the complexity of collision detection can easily escalate to *O(N^2)* if no optimization is made, imposing an algorithmic bottleneck. A commonly-used technique is grid-based neighborhood search. By confining the search for collision-prone particles to a small area, we can reduce the computational complexity of collision detection back to *O(N)*. This article takes a minimal 2D discrete element method (DEM) solver as an example and presents a highly efficient implementation of neighborhood search using Taichi's data structures.
 
 ## What is DEM
 
