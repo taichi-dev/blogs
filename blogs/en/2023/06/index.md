@@ -11,7 +11,6 @@ In this blog post, I'd like to discuss our work on improving gradient computatio
 
 [[paper](https://arxiv.org/pdf/2305.00092.pdf)] [[code](https://github.com/DesmondZhong/diff_sim_improve_grads)]
 
----
 
 # What is differentiable simulation
 
@@ -50,8 +49,7 @@ In other words, if we have a differentiable contact model that allows gradients 
 
 This doesn't mean we solve all the challenges introduced by collisions and contacts. In the [diffTaichi](https://arxiv.org/abs/1910.00935) paper, [Yuanming Hu](https://yuanming.taichi.graphics/) et al. find that collisions can cause the calculated gradient to be entirely incorrect. The video below clearly demonstrates this issue.
 
-<video src="https://www.youtube.com/embed/Z1xvAZve9aE?start=182" controls>
-</video>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Z1xvAZve9aE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 Inspired by this observation, [diffTaichi](https://arxiv.org/abs/1910.00935) suggests calculating the exact time of impact (TOI) and adding a correction term to the post-collision position based on the TOI. While the added correction term doesn't significantly affect the forward simulation, it greatly improves gradient computation. The paper verifies this improvement in several optimization tasks.
 
@@ -63,7 +61,7 @@ Our motivating problem comes from an optimal control problem studied by [Wei Hu 
 
 The animation on the left shows the trajectory before optimization, where we apply a constant control to Ball 1. The animation on the right shows the trajectory under the analytical optimal control. (Since this example only involves elastic frictionless collision, we are able to compute the analytical optimal control.)
 
-|||
+|before optimization | after optimization |
 |:---:|:---:|
 |![](./imgs/single_before_opt.gif)|![](./imgs/single_after_opt.gif)|
 
