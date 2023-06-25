@@ -96,8 +96,8 @@ It turns out that the increase of loss appears when the time step at which the c
 
 |||
 |:---:|:---:|
-|<img style="margin:0px auto;display:block" src="./imgs/cartoon1.svg" width="300"/>
-|<img style="margin:0px auto;display:block" src="./imgs/cartoon2.svg" width="300"/>|
+|<img style="margin:0px auto;display:block" src="./imgs/cartoon1.svg" width="300"></img>
+|<img style="margin:0px auto;display:block" src="./imgs/cartoon2.svg" width="300"></img>|
 
 The left panel illustrates the positions of the balls in iteration $i$. Here $p_{1, n-1}^i$ and $p_{1, n}^i$ denote the position of the Ball 1 at time step $n-1$ and $n$ in iteration $i$, respectively. The collision happens in time step $n+1$, and $\hat{p}_{1, n+1}^i$ denotes the penetrated position of Ball 1, which is an intermediate variable used to resolve the collision. The direction of the post-collision velocity of Ball 2 is determined by the _penetration direction_, indicated by the green arrow.
 
