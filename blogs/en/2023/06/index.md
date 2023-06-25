@@ -1,6 +1,8 @@
 ---
 title: "Improving Gradient Computation for Differentiable Physics Simulation with Contacts"
 slug: improving-gradient-computation
+authors:
+  - Desmond
 date: "2023-06-21"
 tags: ["differentiable simulation"]
 ---
@@ -9,7 +11,7 @@ tags: ["differentiable simulation"]
 
 In this blog post, I'd like to discuss our work on improving gradient computation for differentiable simulation. This is a joint work with Jiequn Han from Flatiron Institute and my colleagues Biswadip Dey and Georgia Olympia Brikis at Siemens. This work has been accepted by the [5th Annual Conference on Learning for Dynamics and Control](https://l4dc.seas.upenn.edu/).
 
-[[paper](https://arxiv.org/pdf/2305.00092.pdf)] [[code](https://github.com/DesmondZhong/diff_sim_improve_grads)]
+[[paper](https://proceedings.mlr.press/v211/zhong23a/zhong23a.pdf)] [[arXiv](https://arxiv.org/pdf/2305.00092.pdf)] [[code](https://github.com/DesmondZhong/diff_sim_improve_grads)]
 
 
 # What is differentiable simulation
@@ -73,6 +75,9 @@ The idea seems straightforward. I implement this idea in both PyTorch and Taichi
 ![](./imgs/two_balls_2_problematic_learning_curve.png)
 
 Notice the gap between the converged loss and the analytical optimal loss? This indicates that the differentiable simulation does not converge to the optimal solution. To confirm this, let's plot the learned control sequences and compare them to the analytical optimal control sequence.
+
+![](./imgs/two_balls_2_problematic_ctrls.png)
+
 The shapes are distinctly different. Why does differentiable simulation fail to converge to the analytical optimal solution?
 
 ## A hint of the issue
@@ -81,7 +86,7 @@ To understand the reason of this failure, we initialize the learning with the an
 
 ![](./imgs/two_balls_2_loss_from_u_opt.png)
 
-Surprisingly, the loss increases during specific iterations! The figure is interactive so feel free to zoom in and and examine the changes occurring over the iterations. This unexpected behavior provides us with a clue to investigate the reasons behind the failure of the differentiable simulation.
+Surprisingly, the loss increases during specific iterations! The right panel is a close-up view of the first 100 iterations. This unexpected behavior provides us with a clue to investigate the reasons behind the failure of the differentiable simulation.
 
 ## The reason behind loss increase
 
