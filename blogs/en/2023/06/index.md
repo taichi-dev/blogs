@@ -51,7 +51,9 @@ In other words, if we have a differentiable contact model that allows gradients 
 
 This doesn't mean we solve all the challenges introduced by collisions and contacts. In the [diffTaichi](https://arxiv.org/abs/1910.00935) paper, [Yuanming Hu](https://yuanming.taichi.graphics/) et al. find that collisions can cause the calculated gradient to be entirely incorrect. The video below clearly demonstrates this issue.
 
+<div align="center">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Z1xvAZve9aE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
 
 Inspired by this observation, [diffTaichi](https://arxiv.org/abs/1910.00935) suggests calculating the exact time of impact (TOI) and adding a correction term to the post-collision position based on the TOI. While the added correction term doesn't significantly affect the forward simulation, it greatly improves gradient computation. The paper verifies this improvement in several optimization tasks.
 
@@ -94,7 +96,8 @@ It turns out that the increase of loss appears when the time step at which the c
 
 |||
 |:---:|:---:|
-|![](./imgs/cartoon1.svg)|![](./imgs/cartoon2.svg)|
+|<img style="margin:0px auto;display:block" src="./imgs/cartoon1.svg" width="300"/>
+|<img style="margin:0px auto;display:block" src="./imgs/cartoon2.svg" width="300"/>|
 
 The left panel illustrates the positions of the balls in iteration $i$. Here $p_{1, n-1}^i$ and $p_{1, n}^i$ denote the position of the Ball 1 at time step $n-1$ and $n$ in iteration $i$, respectively. The collision happens in time step $n+1$, and $\hat{p}_{1, n+1}^i$ denotes the penetrated position of Ball 1, which is an intermediate variable used to resolve the collision. The direction of the post-collision velocity of Ball 2 is determined by the _penetration direction_, indicated by the green arrow.
 
@@ -115,7 +118,7 @@ Now that we have identify the issue, we can move forward and improve gradient co
 
 The difference between the collision direction $\overline{n}$ (in brown) and penetration direction $\hat{n}$ (in green) is shown below. Please check out our paper for details on how to compute the collision direction.
 
-![](./imgs/cartoon3.svg)
+<img style="margin:0px auto;display:block" src="./imgs/cartoon3.svg" width="400"/>
 
 After applying TOI-Velocity, our implementations in both Taichi and PyTorch are able to converge to the analytical optimal loss and the learned control sequences match the analytical ones.
 
