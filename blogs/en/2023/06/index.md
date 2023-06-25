@@ -115,7 +115,7 @@ Now that we have identify the issue, we can move forward and improve gradient co
 
 The difference between the collision direction $\overline{n}$ (in brown) and penetration direction $\hat{n}$ (in green) is shown below. Please check out our paper for details on how to compute the collision direction.
 
-<img style="margin:0px auto;display:block" src="./imgs/cartoon3.svg" width="400"/>
+![](./imgs/cartoon3.svg)
 
 After applying TOI-Velocity, our implementations in both Taichi and PyTorch are able to converge to the analytical optimal loss and the learned control sequences match the analytical ones.
 
