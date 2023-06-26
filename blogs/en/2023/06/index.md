@@ -7,7 +7,7 @@ date: "2023-06-21"
 tags: ["differentiable simulation"]
 ---
 
-> Note: If you have any objections or suggestions regarding the content of this article, you can contact the author of the [original post](https://desmondzhong.com/blog/2023-improving-gradient-computation/).
+> Note: If you have any comments or suggestions regarding the content of this article, you can contact the author of the [original post](https://desmondzhong.com/blog/2023-improving-gradient-computation/).
 
 In this blog post, I'd like to discuss our work on improving gradient computation for differentiable simulation. This is a joint work with Jiequn Han from Flatiron Institute and my colleagues Biswadip Dey and Georgia Olympia Brikis at Siemens. This work has been accepted by the [5th Annual Conference on Learning for Dynamics and Control](https://l4dc.seas.upenn.edu/).
 
